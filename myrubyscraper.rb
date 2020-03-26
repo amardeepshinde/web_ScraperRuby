@@ -1,47 +1,36 @@
 
 require 'open-uri'
 require 'nokogiri'
-require "dbi"
-
+require 'sqlite3'
 
 begin
-   
-   dbh = DBI.connect("DBI:Mysql:TESTDB:localhost", "root", "root")
-
-
-
-   dbh.do("CREATE TABLE RECIPECATEGORY (
-  NAME  CHAR(20) NOT NULL,
-   LINK CHAR(20))" );
-
-   dbh.do("CREATE TABLE RECIPESUBCATEGORY (
-    NAME  CHAR(20) NOT NULL,
-     LINK CHAR(20) )" );
-
-        
-   dbh.do("CREATE TABLE SUBSUBCATEGORY (
-    NAME  CHAR(20) NOT NULL,
-     LINK CHAR(20) )" );
-
-     dbh.do("CREATE TABLE DESCRIPATION (
-        NAME  CHAR(20) NOT NULL)" );
     
-
-        pst = con.prepare "INSERT INTO RECIPECATEGORY(Nam, LINK) VALUES(? , ?)"
-        pst.execute name
-            
-       puts "Record has been created"
-       dbh.commit
-    rescue DBI::DatabaseError => e
-       puts "An error occurred"
-       puts "Error code:    #{e.err}"
-       puts "Error message: #{e.errstr}"
-       dbh.rollback
-    ensure
-       
-       dbh.disconnect if dbh
-    end
+    db = SQLite3::Database.open "my.db"
+    db.execute "CREATE TABLE RECIPECATEGORY(Id INTEGER PRIMARY KEY, 
+        Name TEXT , link Text)"
+    db.execute "CREATE TABLE RecipeSubCategory(Id INTEGER , 
+      Name TEXT , link Text)"
+    db.execute "CREATE TABLE SubSubCategory(Id INTEGER , 
+        Name TEXT , link Text)"
+    db.execute "CREATE TABLE Descripation(Id INTEGER , 
+        desc TEXT )"
     
+        db.execute "INSERT INTO RECIPECATEGORY(Name , link ) VALUES(? , ?)"
+
+        db.execute (@@description)
+  
+
+    
+rescue SQLite3::Exception => e 
+    
+    puts "Exception occurred"
+    puts e
+    
+ensure
+    db.close if db
+end
+
+
 
 
 class RecipeCategory
@@ -152,9 +141,9 @@ class Descripation
 
 		
         descripation_page.css('#insideScroll ul li').each do |li|
-            @names = "#{li.css('span').text}"
+            @descriptions = "#{li.css('span').text}"
            
-            puts @names  
+            puts @descriptions  
 
             end
             
