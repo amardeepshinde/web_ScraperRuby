@@ -15,9 +15,14 @@ begin
     db.execute "CREATE TABLE Descripation(Id INTEGER , 
         desc TEXT )"
     
-        db.execute "INSERT INTO RECIPECATEGORY(Name , link ) VALUES(? , ?)"
+         db.prepare( "INSERT INTO RECIPECATEGORY(Name , link ) VALUES(? , ?)" ) do |stmt|
+    1000.times do
+      stmt.execute do |get_categorys|
+        ...
+      end
+    end
+  end
 
-        db.execute (@@description)
   
 
     
